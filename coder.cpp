@@ -2,6 +2,8 @@
 #include <unordered_map>
 #include <algorithm>
 #include <map>
+#include <string>
+#include <iomanip>
 #include <queue>
 #define DEBUG
 
@@ -12,7 +14,7 @@ struct node
 	char name;
 	node* left;
 	node* right;
-	node(const int frequency, char name = ' ', node left = nullptr, node* right = nullptr)
+	node(const int frequency, char name = ' ', node* left = nullptr, node* right = nullptr)
 	{
 		this->frequency = frequency;
 		this->name = name;
@@ -23,6 +25,22 @@ struct node
 node* tree = nullptr;
 std::map<char, std::string> dictionary;
 
+std::map<std::string,char> make_decode_dictionary()
+{
+	std::map<std::string, char> decode_dictionary;
+	int n;
+	std::cin >> n;
+	int size;
+	std::cin >> size;
+	std::string inp;
+	std::string t;
+	std::getline(std::cin,t);
+	for(int i = 0; i < n; ++i){
+		std::getline(std::cin, inp);
+			decode_dictionary[inp.substr(3)] = inp[0];
+	}
+	return decode_dictionary;
+}
 void search(node* cur_node, std::string code)
 {
 	node* prev = cur_node;
@@ -47,7 +65,7 @@ void search(node* cur_node, std::string code)
 	}
 }
 
-std::string huffman_code(std::string s)
+std::string huffman_coder(std::string s)
 {
 	if(s.size() == 1)
 	{
@@ -130,16 +148,32 @@ std::string huffman_code(std::string s)
 
 	}
 
-	return result; // TODO
+	return result;
 }
 
-
+std::string huffman_decoder(std::string s, std::map<std::string, char> dictionary)
+{
+	std::string result;
+	std::string cur_code; 
+	for (int i = 0; i < s.size(); ++i)
+	{
+		cur_code += s[i];
+		if(dictionary.find(cur_code) != dictionary.end())
+		{ 
+			result += dictionary[cur_code];
+			cur_code = "";
+		}
+	}
+	return result;
+}
 
 
 int main()
 {
+	std::map<std::string, char> dictionary = make_decode_dictionary();
+	//std::cout << huffman_coder(s);
 	std::string s = "a"; 
-	std::cin >> s; // UNCOMMENT
-	std::cout << huffman_code(s);
+	std::cin >> s; 
+	std::cout << huffman_decoder(s,dictionary);
 	return 0;
-}*
+}
